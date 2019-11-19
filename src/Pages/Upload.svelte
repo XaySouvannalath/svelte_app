@@ -1,6 +1,7 @@
 <script>
   import XLSX from "xlsx";
   import { excel_data } from "../stores";
+  import {fade, fly,slide} from "svelte/transition"
   let files = [];
   let data = [];
   let temp1 = [];
@@ -77,8 +78,9 @@
   }
 </script>
 
-<div class="box has-text-centered">
+<div in:slide out:slide class="box has-text-centered">
   <input
+
     on:change={onChoose}
     style="display: none;"
     id="fileinput"
@@ -89,13 +91,14 @@
     <!-- <button on:click={checkFile} class="button is-primary">check files</button> -->
     {#if files.length == 0}
       <!-- content here -->
-      <button on:click={openFileInput} class="button is-success is-outlined cf">
+      <button   on:click={openFileInput} class="button is-success is-outlined cf">
         Choose excel file
       </button>
       <br />
       <br />
 
       <a
+     
         href="table_template.xlsx"
         class="button is-success is-outlined is-small">
         download excel template
@@ -104,15 +107,14 @@
   {/if}
 
   {#if local_excel_data.length == 0}
-    <br />
-    <br />
+ 
     {#if files.length != 0}
-      <button on:click={setData} class="button is-primary is-outlined is-small">
+      <button   on:click={setData} class="button is-primary is-outlined is-small">
         set data
       </button>
     {/if}
   {:else}
-    <button on:click={clearFileInput} class="button is-danger is-outlined cf">
+    <button   on:click={clearFileInput} class="button is-danger is-outlined cf">
       Reset excel file
     </button>
   {/if}

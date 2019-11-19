@@ -2,11 +2,12 @@
   import { count, excel_data } from "../stores";
   import Incrementer from "../Components/Incrementer.svelte";
   import { onDestroy } from "svelte";
+  import { slide } from "svelte/transition"
   let count_value;
   let x_c
 </script>
 
-<article class="message">
+<article in:slide out:slide class="message">
   <div class="message-header">
     <p>Note</p>
 

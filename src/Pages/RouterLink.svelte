@@ -1,5 +1,16 @@
 <script>
     import { curRoute } from "../routes.js";
+   import { IS_NAV_ACTIVE } from "../stores.js"
+  export let IS_ACTIVE = false;
+
+
+  let unsubscriber = IS_NAV_ACTIVE.subscribe(value => {
+    IS_ACTIVE = value
+  })
+  function handlerActive() {
+    IS_NAV_ACTIVE.update(data => data = !IS_ACTIVE)
+  }
+
 
 
     export let page = {
@@ -22,11 +33,12 @@
         text-transform: uppercase;
         text-decoration: none;
         padding: 1rem;
+        
     }
 
 	.custom_font{
 		font-family: 'Fredoka One', cursive;
-	
+    color: aliceblue!important;
 	}
 
     
@@ -35,6 +47,6 @@
 <!-- 
 <a   href={page.path} on:click|preventDefault={redirectTo}>{page.name}</a>
  -->
-      <a class="navbar-item custom_font is has-text-grey" href={page.path} on:click|preventDefault={redirectTo}>
+      <a on:click={handlerActive} class="navbar-item custom_font is has-text-grey" href={page.path} on:click|preventDefault={redirectTo}>
         {page.name}
       </a>  

@@ -1,8 +1,10 @@
 <script>
   import XLSX from "xlsx";
-
+  //import * as writejson from "writejson"
+  //import fs from "fs"
   //import clipboard from "clipboard-polyfill" // this is the old way of calling this library
   import * as clipboard from "clipboard-polyfill";
+  import { fade, slide, fly, scale, blur } from "svelte/transition";
   import "./google.js";
   import { excel_data, is_table_proess_with_fk } from "../stores.js";
   import {
@@ -207,7 +209,7 @@
     return references;
   }
   function gComment(obj) {
-    return `COMMENT '${obj.table_description}'`;
+    return `COMMENT = '${obj.table_description}'`;
   }
 
   function gTableSQL() {}
@@ -217,7 +219,30 @@
     var references = [];
     var comma = "";
     var comment = gComment(obj);
+
+    var empty_reference = 0;
+    var have_reference = 0;
     if (is_process_with_fk == "yes") {
+      /*       for (var i = 0; i < obj.data.table_column.length; i++) {
+        console.log(obj.data.table_column[i].REFERENCE);
+        if (obj.data.table_column[i].REFERENCE == "") {
+          empty_reference = empty_reference + 1;
+        } else if (obj.data.table_column[i].RERFENCE != "") {
+          have_reference = have_reference + 1;
+        }
+      } */
+
+      /*  obj.data.table_column.forEach(function(el) {
+        Object.keys(el).forEach(function(property) {
+          if (el[property] === "") {
+           console.log('this is column is null')
+          }
+        });
+      });
+ */
+      /*     console.log("no reference: " + empty_reference);
+      console.log("have references: " + empty_reference); */
+
       comma = ",";
       references = gReference(obj);
     } else if (is_process_with_fk == "no") {
@@ -244,13 +269,26 @@
 </script>
 
 <style>
+  .table_name {
+    font-size: 18px !important;
+    color: white !important;
+  }
   .flex-container {
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-wrap: wrap; /* Safari 6.1+ */
     padding: 0;
     margin: 0;
     list-style: none;
     display: flex;
+    flex-wrap: wrap !important;
   }
 
+  .contain-wrap {
+    display: -webkit-flex !important; /* Safari */
+    -webkit-flex-wrap: wrap !important; /* Safari 6.1+ */
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
   .flex-start {
     justify-content: flex-start;
   }
@@ -313,6 +351,13 @@
   }
 </style>
 
+{#if x_c.length == 0}
+  <div class="box has-text-centered">
+    <button class="button is-success is-outlined">Please upload data.</button>
+  </div>
+  <!-- content here -->
+{/if}
+
 {#if x_c.length != 0}
   <div class="box has-text-centered">
 
@@ -328,27 +373,27 @@
   </div>
 {/if}
 {#if is_process_with_fk == 'yes'}
-  <div class="box flex-container center sticky">
+  <div in:scale out:scale class="box flex-container center sticky">
     {#each x_c as it, i}
-      <div class="">
-        <a
-          class="flex-item button is-success is-outlined"
-          href="#{it.data.table_name}">
-          {i + 1} {it.data.table_name}
-        </a>
-      </div>
+    <div>
+      <a class="flex-item button is-success is-outlined" href="#{it.data.table_name}">
+        {i + 1} {it.data.table_name}
+      </a>
+    </div>
     {/each}
   </div>
 
   {#each x_c as item, i}
-    <div class="box">
+    <div in:scale out:scale class="box">
       <div class="level">
         <div class="level-left">
-          <p id={item.data.table_name}>{i + 1}. {item.data.table_name}</p>
+          <p id={item.data.table_name}>
+            <span class="table_name">{i + 1}. {item.data.table_name}</span>
+          </p>
         </div>
         <div class="level-right">
           <button
-            class="button is-primary is-outlined"
+            class="button is-primary is-outlined is-small"
             on:click={copy(gSQL(item))}>
             Copy
           </button>
@@ -362,7 +407,7 @@
   {/each}
   <!-- content here -->
 {:else if is_process_with_fk == 'no'}
-  <div class="box flex-container center sticky">
+  <div in:scale out:scale class="box flex-container center sticky">
     {#each x_c as it, i}
       <div class="">
         <a
@@ -375,10 +420,12 @@
   </div>
 
   {#each x_c as item, i}
-    <div class="box">
+    <div in:scale out:scale class="box">
       <div class="level">
         <div class="level-left">
-          <p id={item.data.table_name}>{i + 1}. {item.data.table_name}</p>
+          <p id={item.data.table_name}>
+            <span class="table_name">{i + 1}. {item.data.table_name}</span>
+          </p>
         </div>
         <div class="level-right">
           <button

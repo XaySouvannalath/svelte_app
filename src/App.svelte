@@ -49,3 +49,4 @@
   <!-- Page component updates here -->
   <svelte:component this={router[$curRoute]} />
 </div>
+

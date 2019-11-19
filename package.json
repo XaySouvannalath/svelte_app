@@ -13,12 +13,14 @@
   "dependencies": {
     "clipboard-polyfill": "^2.8.6",
     "copy-js": "^0.1.1",
+    "fs": "0.0.1-security",
     "highlight.js": "^9.16.2",
     "highlightjs": "^9.16.2",
     "jszip": "^3.2.2",
     "read-excel-file": "^4.0.4",
     "sirv-cli": "^0.4.4",
     "svelte-dropzone": "^1.0.5",
+    "writejson": "^2.0.1",
     "xlsx": "^0.15.1"
   },
   "scripts": {

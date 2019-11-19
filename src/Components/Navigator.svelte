@@ -2,11 +2,15 @@
   import RouterLink from "../Pages/RouterLink.svelte";
   import StateInfo from "./StateInfo.svelte";
   import Reset from "./Reset.svelte";
-  import Upload from "../Pages/Upload.svelte"
+  import Upload from "../Pages/Upload.svelte";
+  import { IS_NAV_ACTIVE } from "../stores.js";
   export let IS_ACTIVE = false;
 
+  let unsubscriber = IS_NAV_ACTIVE.subscribe(value => {
+    IS_ACTIVE = value;
+  });
   function handlerActive() {
-    IS_ACTIVE = !IS_ACTIVE;
+    IS_NAV_ACTIVE.update(data => (data = !IS_ACTIVE));
   }
 </script>
 
@@ -16,13 +20,19 @@
     -moz-box-shadow: 0px 3px 19px -9px rgba(0, 0, 0, 1);
     box-shadow: 0px 3px 19px -9px rgba(0, 0, 0, 1);
   }
+
+  .sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+  }
 </style>
 
-<nav class="navbar is-transparent">
+<nav class="navbar is-transparent is-success ">
   <div class="navbar-brand">
     <a class="navbar-item" href="/home">
       <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRidMHGZO6q0KgkzhEu6XyVHPkVTWdizlnt_J-Nd9MvqXmPyfmR&s"
+        src="./oie_png.png"
         alt="Bulma: a modern CSS framework based on Flexbox" />
     </a>
     <div
