@@ -77,7 +77,9 @@
     reader.readAsBinaryString(file[0]);
   }
 </script>
-
+<svelte:head>
+	<title>Upload</title>
+</svelte:head>
 <div in:slide out:slide class="box has-text-centered">
   <input
 

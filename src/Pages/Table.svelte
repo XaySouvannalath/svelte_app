@@ -1,5 +1,6 @@
 <script>
   import XLSX from "xlsx";
+  import ListTable from "../Components/ListTable.svelte"
   //import * as writejson from "writejson"
   //import fs from "fs"
   //import clipboard from "clipboard-polyfill" // this is the old way of calling this library
@@ -269,87 +270,12 @@
 </script>
 
 <style>
-  .table_name {
-    font-size: 18px !important;
-    color: white !important;
-  }
-  .flex-container {
-    display: -webkit-flex; /* Safari */
-    -webkit-flex-wrap: wrap; /* Safari 6.1+ */
-    padding: 0;
-    margin: 0;
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap !important;
-  }
 
-  .contain-wrap {
-    display: -webkit-flex !important; /* Safari */
-    -webkit-flex-wrap: wrap !important; /* Safari 6.1+ */
-    display: flex !important;
-    flex-wrap: wrap !important;
-  }
-  .flex-start {
-    justify-content: flex-start;
-  }
-
-  .flex-end {
-    justify-content: flex-end;
-  }
-  .flex-end li {
-    background: gold;
-  }
-
-  .center {
-    justify-content: center;
-  }
-  .center li {
-    background: deepskyblue;
-  }
-
-  .space-between {
-    justify-content: space-between;
-  }
-  .space-between li {
-    background: lightgreen;
-  }
-
-  .space-around {
-    justify-content: space-around;
-  }
-  .space-around li {
-    background: hotpink;
-  }
-
-  .space-evenly {
-    justify-content: space-evenly;
-  }
-  .space-evenly li {
-    background: #bada55;
-  }
-
-  .flex-item {
-    background: tomato;
-    padding: 5px;
-    width: fit-content;
-    height: 20;
-    margin: 5px;
-    line-height: 50px;
-    color: white;
-    font-weight: bold;
-    font-size: 10px;
-    text-align: center;
-  }
-
-  .sticky {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-  }
-  .cf {
-    font-family: "Fredoka One", cursive;
-  }
 </style>
+<svelte:head>
+	<title>Table</title>
+ 
+</svelte:head>
 
 {#if x_c.length == 0}
   <div class="box has-text-centered">
@@ -373,15 +299,7 @@
   </div>
 {/if}
 {#if is_process_with_fk == 'yes'}
-  <div in:scale out:scale class="box flex-container center sticky">
-    {#each x_c as it, i}
-    <div>
-      <a class="flex-item button is-success is-outlined" href="#{it.data.table_name}">
-        {i + 1} {it.data.table_name}
-      </a>
-    </div>
-    {/each}
-  </div>
+   <ListTable x_c={x_c} />
 
   {#each x_c as item, i}
     <div in:scale out:scale class="box">
@@ -401,23 +319,13 @@
       </div>
       <br />
       <pre class="">
-        <code class="">{gSQL(item)}</code>
+        <code class="sql">{gSQL(item)}</code>
       </pre>
     </div>
   {/each}
   <!-- content here -->
 {:else if is_process_with_fk == 'no'}
-  <div in:scale out:scale class="box flex-container center sticky">
-    {#each x_c as it, i}
-      <div class="">
-        <a
-          class="flex-item button is-success is-outlined"
-          href="#{it.data.table_name}">
-          {i + 1} {it.data.table_name}
-        </a>
-      </div>
-    {/each}
-  </div>
+  <ListTable x_c={x_c}/>
 
   {#each x_c as item, i}
     <div in:scale out:scale class="box">
@@ -437,7 +345,7 @@
       </div>
       <br />
       <pre class="">
-        <code class="">{gSQL(item)}</code>
+        <code class="sql">{gSQL(item)}</code>
       </pre>
     </div>
   {/each}

@@ -1,68 +1,22 @@
-html, body {
-	position: relative;
-	width: 100%;
-	height: 100%;
-}
+<script>
+  import { scale } from "svelte/transition";
+  export let x_c;
+</script>
 
-body {
-	color: #333;
-	margin: 0;
-	padding: 8px;
-	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-}
-
-a {
-	color: rgb(0,100,200);
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-a:visited {
-	color: rgb(0,80,160);
-}
-
-label {
-	display: block;
-}
-
-input, button, select, textarea {
-	font-family: inherit;
-	font-size: inherit;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
-}
-
-input:disabled {
-	color: #ccc;
-}
-
-input[type="range"] {
-	height: 0;
-}
-
-button {
-	color: #333;
-	background-color: #f4f4f4;
-	outline: none;
-}
-
-button:active {
-	background-color: #ddd;
-}
-
-button:focus {
-	border-color: #666;
-}
+<div in:scale out:scale class="box flex-container center sticky">
+  {#each x_c as it, i}
+    <div class="">
+      <a
+        class="flex-item button is-success is-outlined"
+        href="#{it.data.table_name}">
+        {i + 1} {it.data.table_name}
+      </a>
+    </div>
+  {/each}
+</div>
 
 
-
+<style>
 
 
 .table_name {
@@ -145,3 +99,4 @@ button:focus {
   .cf {
     font-family: "Fredoka One", cursive;
   }
+</style>
