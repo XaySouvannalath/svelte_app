@@ -20,6 +20,7 @@
     "read-excel-file": "^4.0.4",
     "sirv-cli": "^0.4.4",
     "svelte-dropzone": "^1.0.5",
+    "svelte-preprocess": "^3.2.6",
     "writejson": "^2.0.1",
     "xlsx": "^0.15.1"
   },

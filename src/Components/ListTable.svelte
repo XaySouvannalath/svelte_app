@@ -1,13 +1,17 @@
 <script>
   import { scale } from "svelte/transition";
   export let x_c;
+
+
 </script>
 
 <div in:scale out:scale class="box flex-container center sticky">
   {#each x_c as it, i}
     <div class="">
       <a
+      
         class="flex-item button is-success is-outlined"
+      
         href="#{it.data.table_name}">
         {i + 1} {it.data.table_name}
       </a>

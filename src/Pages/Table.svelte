@@ -1,6 +1,6 @@
 <script>
   import XLSX from "xlsx";
-  import ListTable from "../Components/ListTable.svelte"
+  import ListTable from "../Components/ListTable.svelte";
   //import * as writejson from "writejson"
   //import fs from "fs"
   //import clipboard from "clipboard-polyfill" // this is the old way of calling this library
@@ -30,6 +30,7 @@
   let excelData = [];
   let x_c = [];
   let tables = [];
+  let all_code = [];
   onMount(async () => {
     /* const res = await fetch("http://localhost:3000/code/api/getTableName");
     tables = await res.json(); */
@@ -95,7 +96,11 @@
 
   function getDefaultValue(value) {
     if (value != "") {
-      return ` DEFAULT '${value}'`;
+      if (value == "NOW()") {
+        return ` DEFAULT ${value}`;
+      } else {
+        return ` DEFAULT '${value}'`;
+      }
     } else {
       return "";
     }
@@ -104,15 +109,25 @@
   function gField(obj) {
     var fields = [];
     for (var i = 0; i < obj.data.table_column.length; i++) {
+      var left = "", right="";
+      if( obj.data.table_column[i].DATA_TYPE == 'DATE'){
+          left = ""
+          right = ""
+      }else{
+          left = "("
+          right = ")"
+      }
       if (i == 0) {
+
+
         fields.push(
           "" +
             obj.data.table_column[i].COLUMN_NAME +
             " " +
             obj.data.table_column[i].DATA_TYPE +
-            "(" +
+            left +
             obj.data.table_column[i].SIZE +
-            ")" +
+            right +
             getNull(obj.data.table_column[i].NOT_NULL) +
             getDescription(obj.data.table_column[i].DESCRIPTION) +
             getAutoIncrement(obj.data.table_column[i].AUTO_INCREMENT) +
@@ -125,9 +140,9 @@
             obj.data.table_column[i].COLUMN_NAME +
             " " +
             obj.data.table_column[i].DATA_TYPE +
-            "(" +
+            left +
             obj.data.table_column[i].SIZE +
-            ")" +
+            right +
             getNull(obj.data.table_column[i].NOT_NULL) +
             getDescription(obj.data.table_column[i].DESCRIPTION) +
             getAutoIncrement(obj.data.table_column[i].AUTO_INCREMENT) +
@@ -171,18 +186,18 @@
     //fk_table_name_column_name
     //  CONSTRAINT `fk_item_type_id` FOREIGN KEY (`TYPE_ID`) REFERENCES `ftp_alm_uat`.`tbl_unit_type` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 
-    var references = [];
+    // var references = [];
     for (var i = 0; i < obj.data.table_column.length; i++) {
       if (i == 0) {
         if (obj.data.table_column[i].REFERENCE != "") {
           references.push(
-            `     CONSTRAINT fk_${obj.data.table_name}_${
+            `ALTER TABLE ${obj.data.table_name} ADD CONSTRAINT fk_${
+              obj.data.table_name
+            }_${obj.data.table_column[i].COLUMN_NAME} FOREIGN KEY (\`${
               obj.data.table_column[i].COLUMN_NAME
-            } FOREIGN KEY ('${
-              obj.data.table_column[i].COLUMN_NAME
-            }') REFERENCES ${getReferenceTable(
+            }\`) REFERENCES (\`${getReferenceTable(
               obj.data.table_column[i].REFERENCE
-            )} ${getReferenceField(
+            )}\`) ${getReferenceField(
               obj.data.table_column[i].REFERENCE
             )} ${getRefUpdate(
               obj.data.table_column[i].REFERENCE_MODE
@@ -192,15 +207,15 @@
       } else {
         if (obj.data.table_column[i].REFERENCE != "") {
           references.push(
-            `\n     CONSTRAINT fk_${obj.data.table_name}_${
+            `\n     ALTER TABLE ${obj.data.table_name} ADD  CONSTRAINT fk_${
+              obj.data.table_name
+            }_${obj.data.table_column[i].COLUMN_NAME} FOREIGN KEY (\`${
               obj.data.table_column[i].COLUMN_NAME
-            } FOREIGN KEY ('${
-              obj.data.table_column[i].COLUMN_NAME
-            }') REFERENCES ${getReferenceTable(
+            }\`) REFERENCES ${getReferenceTable(
               obj.data.table_column[i].REFERENCE
-            )} ${getReferenceField(
+            )} (\`${getReferenceField(
               obj.data.table_column[i].REFERENCE
-            )} ${getRefUpdate(
+            )}\`) ${getRefUpdate(
               obj.data.table_column[i].REFERENCE_MODE
             )} ${getRefDelete(obj.data.table_column[i].REFERENCE_MODE)}`
           );
@@ -214,10 +229,10 @@
   }
 
   function gTableSQL() {}
-
+  var references = [];
   function gSQL(obj) {
     var fields = gField(obj);
-    var references = [];
+    //  references = [];
     var comma = "";
     var comment = gComment(obj);
 
@@ -244,20 +259,25 @@
       /*     console.log("no reference: " + empty_reference);
       console.log("have references: " + empty_reference); */
 
-      comma = ",";
+      comma = "";
       references = gReference(obj);
     } else if (is_process_with_fk == "no") {
       references = "";
       comma = "";
     }
 
-    var code = `CREATE TABLE ${obj.data.table_name}
+    var code = `
+-- table structure of  ${obj.data.table_name}  
+DROP TABLE IF EXISTS ${obj.data.table_name};
+CREATE TABLE ${obj.data.table_name}
 (
      ${fields}${comma}
-     ${references}
+    
 ) ${comment};
 `;
 
+    all_code.push(code);
+    console.log(code);
     return code;
   }
 
@@ -267,14 +287,22 @@
   function checkFile() {
     console.log(files);
   }
+
+  function getConvertReference() {
+    return references.join(";");
+  }
+  function getConvertSQLCode() {
+    return all_code.join("")
+  }
 </script>
 
 <style>
 
 </style>
+
 <svelte:head>
-	<title>Table</title>
- 
+  <title>Table</title>
+
 </svelte:head>
 
 {#if x_c.length == 0}
@@ -299,7 +327,7 @@
   </div>
 {/if}
 {#if is_process_with_fk == 'yes'}
-   <ListTable x_c={x_c} />
+  <ListTable {x_c} />
 
   {#each x_c as item, i}
     <div in:scale out:scale class="box">
@@ -324,8 +352,44 @@
     </div>
   {/each}
   <!-- content here -->
+
+  <div in:scale out:scale>
+   <div class="level">
+        <div class="level-left">
+         
+        </div>
+        <div class="level-right">
+          <button
+            class="button is-primary is-outlined"
+            on:click={copy(getConvertSQLCode())}>
+            Copy
+          </button>
+        </div>
+      </div>
+    <pre class="">
+      <code class="sql">{getConvertSQLCode()};</code>
+    </pre>
+
+
+   <div class="level">
+        <div class="level-left">
+           
+        </div>
+        <div class="level-right">
+          <button
+            class="button is-primary is-outlined"
+            on:click={copy(getConvertReference())}>
+            Copy
+          </button>
+        </div>
+      </div>
+    <pre class="">
+      <br />
+      <code class="sql">{getConvertReference()};</code>
+    </pre>
+  </div>
 {:else if is_process_with_fk == 'no'}
-  <ListTable x_c={x_c}/>
+  <ListTable {x_c} />
 
   {#each x_c as item, i}
     <div in:scale out:scale class="box">
