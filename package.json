@@ -19,7 +19,7 @@
     "read-excel-file": "^4.0.4",
     "sirv-cli": "^0.4.4",
     "svelte-dropzone": "^1.0.5",
-    "xlsx": "^0.15.1"
+    "xlsx": "^0.17.0"
   },
   "scripts": {
     "build": "rollup -c",
