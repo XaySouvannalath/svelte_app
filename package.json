@@ -15,7 +15,7 @@
     "copy-js": "^0.1.1",
     "highlight.js": "^9.16.2",
     "highlightjs": "^9.16.2",
-    "jszip": "^3.2.2",
+    "jszip": "^3.7.0",
     "read-excel-file": "^4.0.4",
     "sirv-cli": "^0.4.4",
     "svelte-dropzone": "^1.0.5",
